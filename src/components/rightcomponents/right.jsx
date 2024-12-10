@@ -8,7 +8,7 @@ function Right(){
     return(
         <>
         <div className="right">
-        <Search/>
+        {/* <Search/> */}
         <div className="seprat2"></div>
         <Explore/>
         <div className="seprat2"></div>
