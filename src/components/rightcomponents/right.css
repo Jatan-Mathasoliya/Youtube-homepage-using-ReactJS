@@ -92,8 +92,9 @@
 }
 .cards{
     display: grid;
-    grid-template-columns: repeat(4, 20vw);
+    grid-template-columns: repeat(4, 19vw);
     grid-template-rows: repeat(3, 35vh);
+    margin: 4vh 0 0 3vw;
 
 }
 .content{
@@ -112,7 +113,7 @@
 .name{
     display: flex;
     img{
-        height: 1.5vh;
+        height: 1vh;
     }
     gap: 0.5vh;
     align-items: center;
@@ -122,4 +123,9 @@
 .text{
     color: rgb(144, 144, 144);
     font-size: 0.8rem;
+}
+.thumbnail{
+    img{
+        width: 17vw;
+    }
 }
