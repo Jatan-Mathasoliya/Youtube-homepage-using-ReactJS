@@ -18,16 +18,16 @@ useEffect(()=>{
             {videos.map((x)=>(
                 <div className="video" key={x.id}>
                     <div className="thumbnail">
-                        <img src={`http://localhost:3000${x.thumb}`} alt="" />
+                        <img src={`https://youtube-clone-server-c4gs.onrender.com${x.thumb}`} alt="" />
                     </div>
                     <div className="content">
                         <div className="profile">
-                            <img src={`http://localhost:3000${x.profile}`} alt="" />
+                            <img src={`https://youtube-clone-server-c4gs.onrender.com${x.profile}`} alt="" />
                         </div>
                         <div className="about">
                             <div className="title">{x.title}</div>
                             <div className="name">{x.name}
-                                <img src={`http://localhost:3000${x.img}`} alt="" />
+                                <img src={`hhttps://youtube-clone-server-c4gs.onrender.com${x.img}`} alt="" />
                             </div>
                             <div className="text">{x.text}</div>
                         </div>
