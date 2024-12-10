@@ -54,6 +54,7 @@ function Search() {
   const [videos, setVideos] = useState([]);
   const [searchQuery, setSearchQuery] = useState(""); // For storing search input
   const [loading, setLoading] = useState(false);
+  const [nextPageToken, setNextPageToken] = useState(""); // To fetch different pages of results
 
   const API_KEY = "AIzaSyCYRT2zdQXerAHeywFTSJcNOCQxJYHFEr0"; // Replace with your actual API key
 
@@ -63,7 +64,7 @@ function Search() {
     try {
       const endpoint = query
         ? `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&maxResults=20&key=${API_KEY}`
-        : `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&chart=mostPopular&regionCode=US&maxResults=20&key=${API_KEY}`;
+        : `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&chart=mostPopular&regionCode=US&maxResults=20&pageToken=${nextPageToken}&key=${API_KEY}`;
 
       const response = await fetch(endpoint);
       const data = await response.json();
@@ -76,6 +77,7 @@ function Search() {
       }));
 
       setVideos(transformedData);
+      setNextPageToken(data.nextPageToken || ""); // Save the next page token for future use
     } catch (error) {
       console.error("Error fetching videos: ", error);
     }
@@ -83,8 +85,10 @@ function Search() {
     setLoading(false);
   };
 
-  // Fetch popular videos on load
+  // Fetch popular videos on load with a random page token
   useEffect(() => {
+    const randomPageToken = Math.random().toString(36).substring(7); // Generate a random page token-like string
+    setNextPageToken(randomPageToken); // Update pageToken to ensure different results
     fetchVideos();
   }, []);
 
