@@ -6,10 +6,8 @@ import './main.css'
 import Test from './Test'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <div className="main">
     <Left/>
     <Right/>
     </div>
-  </StrictMode>,
 )

@@ -40,63 +40,50 @@
 // }
 // export default Home;
 
-
-import React, { useEffect, useState } from "react";
-import "./right.css";
-import searchIcon from "../../assets/search.png";
+import React, { useState, useEffect } from "react";
 import micIcon from "../../assets/mic.png";
 import createIcon from "../../assets/create.png";
 import moreIcon from "../../assets/more.png";
 import bellIcon from "../../assets/bell.png";
 import profileIcon from "../../assets/Ellipse 4-1.png";
+import "./right.css";
 
-function Search() {
+function RightMain() {
+  const [input, setInput] = useState("");
+  const [search, setSearch] = useState("codinggita");
   const [videos, setVideos] = useState([]);
-  const [searchQuery, setSearchQuery] = useState(""); // For storing search input
-  const [loading, setLoading] = useState(false);
-  const [nextPageToken, setNextPageToken] = useState(""); // To fetch different pages of results
 
-  const API_KEY = "AIzaSyCYRT2zdQXerAHeywFTSJcNOCQxJYHFEr0"; // Replace with your actual API key
+  const API_KEY = "AIzaSyCYRT2zdQXerAHeywFTSJcNOCQxJYHFEr0"; // Replace with environment variable
+  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${search}&type=video&maxResults=20&key=${API_KEY}`;
 
-  const fetchVideos = async (query) => {
-    setLoading(true);
-
-    try {
-      const endpoint = query
-        ? `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&maxResults=20&key=${API_KEY}`
-        : `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&chart=mostPopular&regionCode=US&maxResults=20&pageToken=${nextPageToken}&key=${API_KEY}`;
-
-      const response = await fetch(endpoint);
-      const data = await response.json();
-
-      const transformedData = data.items.map((item) => ({
-        id: item.id.videoId || item.id, // Handle both "search" and "videos" responses
-        thumb: item.snippet.thumbnails.high.url,
-        title: item.snippet.title,
-        channel: item.snippet.channelTitle,
-      }));
-
-      setVideos(transformedData);
-      setNextPageToken(data.nextPageToken || ""); // Save the next page token for future use
-    } catch (error) {
-      console.error("Error fetching videos: ", error);
-    }
-
-    setLoading(false);
+  const fetchVideos = () => {
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const cardData = data.items.map((item) => ({
+          id: item.id.videoId || item.id,
+          thumb: item.snippet.thumbnails.high.url,
+          title: item.snippet.title,
+          channel: item.snippet.channelTitle,
+        }));
+        setVideos(cardData);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
   };
 
-  // Fetch popular videos on load with a random page token
   useEffect(() => {
-    const randomPageToken = Math.random().toString(36).substring(7); // Generate a random page token-like string
-    setNextPageToken(randomPageToken); // Update pageToken to ensure different results
-    fetchVideos();
-  }, []);
+    if (search) {
+      fetchVideos();
+    }
+  }, [search]);
 
   const handleSearch = (e) => {
+    setInput(e.target.value);
+  };
+
+  const handleClick = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      fetchVideos(searchQuery);
-    }
+    setSearch(input);
   };
 
   return (
@@ -104,18 +91,16 @@ function Search() {
       {/* Search Bar */}
       <div className="search">
         <div className="searchbar">
-          <form className="bar" onSubmit={handleSearch}>
+          
             <input
               type="text"
               placeholder="Search"
               className="upsearchbar"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={input}
+              onChange={handleSearch}
             />
-            <button type="submit" className="searchimg">
-              <img src={searchIcon} alt="Search" />
-            </button>
-          </form>
+            <button type="submit" onClick={handleClick}>Search</button>
+        
           <div className="mic">
             <img src={micIcon} alt="Mic" />
           </div>
@@ -128,34 +113,30 @@ function Search() {
         </div>
       </div>
 
-      {/* Video List */}
-      {loading ? (
-        <p>Loading videos...</p>
-      ) : (
-        <div className="cards">
-          {videos.map((video) => (
-            <div className="video" key={video.id}>
-              <div className="thumbnail">
-                <iframe
-                  width="100%"
-                  height="200"
-                  src={`https://www.youtube.com/embed/${video.id}`}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title={video.title}
-                ></iframe>
-              </div>
-              <div className="content">
-                <div className="title">{video.title}</div>
-                <div className="channel">{video.channel}</div>
-              </div>
+      {/* Video Cards */}
+      <div className="video_page">
+        {videos.map((video) => (
+          <div className="video" key={video.id}>
+            <div className="thumbnail">
+              <iframe
+                width="100%"
+                height="200"
+                src={`https://www.youtube.com/embed/${video.id}`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={video.title}
+              ></iframe>
             </div>
-          ))}
-        </div>
-      )}
+            <div className="content">
+              <div className="title">{video.title}</div>
+              <div className="channel">{video.channel}</div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
-export default Search;
+export default RightMain;

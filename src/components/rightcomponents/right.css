@@ -194,3 +194,7 @@
   .upsearchbar{
     color: white;
   }
+  .video_page{
+    display: grid;
+    grid-template-columns: repeat(4, 20vw);
+  }
